@@ -11,7 +11,7 @@ const Web3 = require('web3');
 //可以在一個專案裡創建多個web3實例來連接不同以太坊網路，但實務上少見。
 //透過使用不同的provider作為參數，可以連接到不同以太坊網路，此處是連接到本地的使用ganache架設的測試網路。
 const web3 = new Web3(ganache.provider());
-const { interface, bytecode } = require('../compile');
+const { abi, evm } = require('../compile');
 
 let accounts;
 let inbox;
@@ -29,9 +29,9 @@ beforeEach(async () => {
 
     accounts = await web3.eth.getAccounts();
     // Use one of those accounts to deploy the contract
-    inbox = await new web3.eth.Contract(JSON.parse(interface))
+    inbox = await new web3.eth.Contract(abi)
         .deploy({ 
-            data: bytecode, 
+            data: evm.bytecode.object, 
             arguments: [INITIAL_STRING]
         })
         .send({ from: accounts[0], gas: '1000000' });

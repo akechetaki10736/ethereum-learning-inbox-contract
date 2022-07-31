@@ -5,9 +5,24 @@ const solc = require('solc');
 const inboxPath = path.resolve(__dirname, 'contracts', 'Inbox.sol');
 const source = fs.readFileSync(inboxPath, 'utf8');
 
+const input = {
+    language: 'Solidity',
+    sources: {
+        'Inbox.sol': {
+        content: source
+      },
+    },
+    settings: {
+      outputSelection: {
+        '*': {
+          '*': ['*'],
+        },
+      },
+    },
+  };
 
-//module.exports 可以讓編譯完成的檔案馬上被存取。
-//如果一個專案有多個檔案多個合約，冒號前面的名稱就是儲存該合約原始碼的檔案名稱。
-//假如我們的合約撰寫在一個名叫InboxContract的檔案中，程式碼則會如下
-// module.exports = solc.compile(source, 1).contracts['InboxContract:Inbox']; 
-module.exports = solc.compile(source, 1).contracts[':Inbox']; 
+
+// https://www.udemy.com/course/ethereum-and-solidity-the-complete-developers-guide/learn/lecture/28943812#questions
+module.exports = JSON.parse(solc.compile(JSON.stringify(input)))
+    .contracts['Inbox.sol']
+    .Inbox;
